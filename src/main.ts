@@ -2,9 +2,7 @@ import "./style.css";
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import GUI from "lil-gui";
-
-const gui = new GUI();
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 const canvas = document.querySelector("canvas#webgl") as HTMLCanvasElement;
 
@@ -13,12 +11,22 @@ const scene = new THREE.Scene();
 /*
  * Models
  */
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath("/decoder/");
 const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
+
+let animationMixer: THREE.AnimationMixer;
 gltfLoader.load(
-  "/models/Duck/glTF/Duck.gltf",
-  (event) => scene.add(event.scene.children[0]),
-  (event) => console.log("progress", event),
-  (event) => console.log("onerror", event)
+  "/models/Fox/glTF/Fox.gltf",
+  ({ scene: modelScene, animations }) => {
+    animationMixer = new THREE.AnimationMixer(modelScene);
+    const action = animationMixer.clipAction(animations[1]);
+    action.play();
+
+    modelScene.scale.set(0.025, 0.025, 0.025);
+    scene.add(modelScene);
+  }
 );
 
 const floor = new THREE.Mesh(
@@ -111,9 +119,9 @@ const tick = () => {
   const elapsedTime = clock.getElapsedTime();
   const deltaTime = elapsedTime - previousTime;
   previousTime = elapsedTime;
-
   // Update controls
   controls.update();
+  animationMixer?.update(deltaTime);
 
   // Render
   renderer.render(scene, camera);
