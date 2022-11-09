@@ -29,6 +29,12 @@ gltfLoader.load(
   }
 );
 
+gltfLoader.load("/models/Burger/burger.glb", ({ scene: modelScene }) => {
+  modelScene.scale.set(0.25, 0.25, 0.25);
+  modelScene.position.set(2, 0, 2);
+  scene.add(modelScene);
+});
+
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(10, 10),
   new THREE.MeshStandardMaterial({
