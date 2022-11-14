@@ -35,6 +35,12 @@ gltfLoader.load("/models/Burger/burger.glb", ({ scene: modelScene }) => {
   scene.add(modelScene);
 });
 
+gltfLoader.load("/models/iphone_14_pro/scene.gltf", ({ scene: modelScene }) => {
+  modelScene.scale.set(15, 15, 15);
+  modelScene.position.set(-1, 1, -1);
+  scene.add(modelScene);
+});
+
 const floor = new THREE.Mesh(
   new THREE.PlaneGeometry(10, 10),
   new THREE.MeshStandardMaterial({
